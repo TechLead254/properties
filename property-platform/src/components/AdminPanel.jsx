@@ -80,7 +80,9 @@ export default function AdminPanel({
   onPropertySaved,
   onPropertyDeleted,
 }) {
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(() => {
+    try { return localStorage.getItem('nyumbake_admin') === 'true' } catch { return false }
+  })
   const [login, setLogin] = useState({ email: '', password: '' })
   const [loginError, setLoginError] = useState('')
   const [editingId, setEditingId] = useState(properties[0]?.id)
@@ -104,6 +106,7 @@ export default function AdminPanel({
       login.password === adminAccount.password
     ) {
       setIsAdmin(true)
+      try { localStorage.setItem('nyumbake_admin', 'true') } catch {}
       setLoginError('')
       return
     }
@@ -195,6 +198,7 @@ export default function AdminPanel({
     setIsAdmin(false)
     setLogin({ email: '', password: '' })
     setStatus('')
+    try { localStorage.removeItem('nyumbake_admin') } catch {}
   }
 
   const adminHeader = (
