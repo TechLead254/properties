@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { defaultCrop } from '../data/fallbackContent'
 
 const formatter = new Intl.NumberFormat('en-KE')
@@ -34,33 +33,16 @@ export default function PublicSite({
   setCity,
   setMaxRent,
 }) {
-  const [selectedProperty, setSelectedProperty] = useState(null)
-  const [selectedImage, setSelectedImage] = useState(0)
-
   const filtered = properties.filter((property) => {
     const cityMatch = city === 'All' || property.city === city
     const rentMatch = maxRent === 'All' || property.rent <= Number(maxRent)
     return cityMatch && rentMatch
   })
 
-  const openProperty = (property) => {
-    setSelectedProperty(property)
-    setSelectedImage(0)
-    window.location.hash = `property-${property.id}`
-  }
-
-  const closeProperty = () => {
-    setSelectedProperty(null)
-    setSelectedImage(0)
-    window.location.hash = 'rentals'
-  }
-
-  const selectedImages = selectedProperty ? getImages(selectedProperty) : []
-
   return (
     <>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label={`${settings.brand_name} home`}>
+        <a className="brand" href="#/" aria-label={`${settings.brand_name} home`}>
           {settings.logo_image ? (
             <img className="logo-image" src={settings.logo_image} alt="" />
           ) : (
@@ -72,6 +54,7 @@ export default function PublicSite({
           <a href="#rentals">Rentals</a>
           <a href="#market">Market</a>
           <a href="#contact">Contact</a>
+          <a href="#/admin">Admin</a>
         </nav>
       </header>
 
@@ -171,16 +154,22 @@ export default function PublicSite({
                   <span>/ month</span>
                 </div>
                 <div className="card-actions">
-                  <button type="button" onClick={() => openProperty(property)}>
-                    View details
-                  </button>
                   <a
+                    className="view-details-action"
+                    href={`#/property/${property.id}`}
+                  >
+                    View details
+                  </a>
+                  <a
+                    className="whatsapp-btn"
                     aria-label={`WhatsApp ${property.contact_name}`}
                     href={whatsappUrl(property)}
                     rel="noreferrer"
                     target="_blank"
                   >
-                    WA
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.767 5.767 0 1.012.261 2.001.761 2.871l-.811 2.96 3.029-.794c.834.455 1.77.695 2.721.696h.003c3.181 0 5.768-2.586 5.768-5.767 0-3.18-2.586-5.767-5.767-5.767zm3.39 8.161c-.146.411-.749.771-1.034.821-.285.05-.638.08-1.042-.05-.256-.083-.585-.183-1.011-.363-1.745-.733-2.875-2.506-2.961-2.62-.087-.115-.705-.934-.705-1.782 0-.847.444-1.264.603-1.433.159-.168.347-.211.463-.211.116 0 .232.001.332.005.105.004.246-.04.385.295.145.348.492 1.201.535 1.29.043.088.072.19.014.307-.058.117-.087.19-.174.292-.087.102-.183.228-.261.307-.087.088-.178.183-.077.357.102.174.452.746.969 1.206.666.593 1.229.777 1.402.864.174.088.275.073.377-.044.101-.117.434-.506.55-.681.116-.174.232-.146.39-.087.159.058 1.012.477 1.186.565.174.088.29.131.333.204.043.073.043.424-.103.835zm-3.39 9.667C5.584 24 .25 18.666.25 12.083.25 9.987.797 7.94 1.838 6.136L.25 0l6.333 1.662c1.746-.953 3.71-1.455 5.703-1.458h.005c6.554 0 11.89 5.335 11.892 11.893a11.821 11.821 0 01-3.48 8.413 11.783 11.783 0 01-8.413 3.486z" />
+                    </svg>
                   </a>
                 </div>
               </div>
@@ -189,71 +178,7 @@ export default function PublicSite({
         </div>
       </section>
 
-      {selectedProperty ? (
-        <section className="property-detail" id={`property-${selectedProperty.id}`}>
-          <div className="detail-shell">
-            <button className="close-detail" onClick={closeProperty} type="button">
-              Close
-            </button>
-            <div className="detail-gallery">
-              <div className="detail-main-image">
-                <img
-                  src={selectedImages[selectedImage]}
-                  alt={selectedProperty.title}
-                  style={imageStyle(selectedProperty)}
-                />
-              </div>
-              {selectedImages.length > 1 ? (
-                <div className="thumb-strip">
-                  {selectedImages.map((image, index) => (
-                    <button
-                      className={index === selectedImage ? 'active' : ''}
-                      key={image}
-                      onClick={() => setSelectedImage(index)}
-                      type="button"
-                    >
-                      <img src={image} alt="" />
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-            <div className="detail-content">
-              <span className="tag">{selectedProperty.tag}</span>
-              <h2>{selectedProperty.title}</h2>
-              <p>
-                {selectedProperty.location}, {selectedProperty.city}
-              </p>
-              <div className="property-meta">
-                <span>{selectedProperty.beds} bed</span>
-                <span>{selectedProperty.baths} bath</span>
-                <span>{selectedProperty.type}</span>
-              </div>
-              <div className="detail-price">
-                <strong>KES {formatter.format(selectedProperty.rent)}</strong>
-                <span>/ month</span>
-              </div>
-              <div className="enquiry-panel">
-                <h3>Enquiry contact</h3>
-                <span>{selectedProperty.contact_name}</span>
-                <span>{selectedProperty.contact_phone}</span>
-                <span>{selectedProperty.contact_email}</span>
-                <span>
-                  Site tour fee: KES {formatter.format(selectedProperty.tour_fee)}
-                </span>
-                <a
-                  className="whatsapp-action"
-                  href={whatsappUrl(selectedProperty)}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  WhatsApp enquiry
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-      ) : null}
+
 
       <section className="market" id="market">
         <div>

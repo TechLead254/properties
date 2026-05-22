@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import AdminPanel from './components/AdminPanel'
 import PublicSite from './components/PublicSite'
+import PropertyDetail from './components/PropertyDetail'
 import { defaultProperties, defaultSettings } from './data/fallbackContent'
 import { fetchContent } from './lib/contentApi'
 import { hasSupabaseConfig } from './lib/supabase'
@@ -12,6 +13,36 @@ function App() {
   const [city, setCity] = useState('All')
   const [maxRent, setMaxRent] = useState('All')
   const [loadState, setLoadState] = useState('Loading Supabase content...')
+
+  const [currentRoute, setCurrentRoute] = useState(() => {
+    const hash = window.location.hash
+    if (hash.startsWith('#/admin') || hash === '#admin') return 'admin'
+    if (hash.startsWith('#/property/') || hash.startsWith('#property-')) {
+      const match = hash.match(/(?:#\/property\/|#property-)(.+)/)
+      if (match) return `property:${match[1]}`
+    }
+    return 'public'
+  })
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash
+      if (hash.startsWith('#/admin') || hash === '#admin') {
+        setCurrentRoute('admin')
+      } else if (hash.startsWith('#/property/') || hash.startsWith('#property-')) {
+        const match = hash.match(/(?:#\/property\/|#property-)(.+)/)
+        if (match) {
+          setCurrentRoute(`property:${match[1]}`)
+        } else {
+          setCurrentRoute('public')
+        }
+      } else {
+        setCurrentRoute('public')
+      }
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
 
   useEffect(() => {
     let active = true
@@ -53,9 +84,22 @@ function App() {
     )
   }
 
-  return (
-    <main>
-      {loadState ? <div className="status-banner">{loadState}</div> : null}
+  let routeContent = null
+  if (currentRoute === 'admin') {
+    routeContent = (
+      <AdminPanel
+        onPropertySaved={handlePropertySaved}
+        onSettingsSaved={handleSettingsSaved}
+        properties={properties}
+        settings={settings}
+      />
+    )
+  } else if (currentRoute.startsWith('property:')) {
+    const propertyId = currentRoute.split(':')[1]
+    const property = properties.find((p) => String(p.id) === propertyId)
+    routeContent = <PropertyDetail property={property} settings={settings} />
+  } else {
+    routeContent = (
       <PublicSite
         city={city}
         maxRent={maxRent}
@@ -64,12 +108,13 @@ function App() {
         setMaxRent={setMaxRent}
         settings={settings}
       />
-      <AdminPanel
-        onPropertySaved={handlePropertySaved}
-        onSettingsSaved={handleSettingsSaved}
-        properties={properties}
-        settings={settings}
-      />
+    )
+  }
+
+  return (
+    <main>
+      {loadState ? <div className="status-banner">{loadState}</div> : null}
+      {routeContent}
     </main>
   )
 }

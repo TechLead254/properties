@@ -23,14 +23,16 @@ const getImages = (property) => {
   return gallery.length ? gallery : [property.image].filter(Boolean)
 }
 
-function ImageDrop({ label, image, previewAlt, onUpload }) {
+function ImageDrop({ label, image, previewAlt, onUpload, multiple = false }) {
   const [busy, setBusy] = useState(false)
 
-  const handleFile = async (file) => {
-    if (!file) return
+  const handleFiles = async (files) => {
+    if (!files || files.length === 0) return
     setBusy(true)
     try {
-      await onUpload(file)
+      for (const file of files) {
+        await onUpload(file)
+      }
     } finally {
       setBusy(false)
     }
@@ -43,18 +45,23 @@ function ImageDrop({ label, image, previewAlt, onUpload }) {
         onDragOver={(event) => event.preventDefault()}
         onDrop={(event) => {
           event.preventDefault()
-          handleFile(event.dataTransfer.files[0])
+          const files = Array.from(event.dataTransfer.files)
+          handleFiles(multiple ? files : [files[0]])
         }}
       >
         <input
           accept="image/*"
           id={label.replace(/\s+/g, '-').toLowerCase()}
-          onChange={(event) => handleFile(event.target.files[0])}
+          multiple={multiple}
+          onChange={(event) => {
+            const files = Array.from(event.target.files)
+            handleFiles(multiple ? files : [files[0]])
+          }}
           type="file"
         />
         <label htmlFor={label.replace(/\s+/g, '-').toLowerCase()}>
           <strong>{busy ? 'Uploading...' : label}</strong>
-          <span>Drop image or select from folder</span>
+          <span>Drop image{multiple ? 's' : ''} or select from folder</span>
         </label>
       </div>
       {image ? (
@@ -171,9 +178,47 @@ export default function AdminPanel({
     setStatus('Property saved.')
   }
 
+  const adminHeader = (
+    <header className="site-header">
+      <a className="brand" href="#/">
+        {settings?.logo_image ? (
+          <img className="logo-image" src={settings.logo_image} alt="" />
+        ) : (
+          <span className="brand-mark">{settings?.brand_name?.charAt(0)}</span>
+        )}
+        <span>
+          {settings?.brand_name}{' '}
+          <span
+            style={{
+              fontSize: '12px',
+              background: '#e7f2ef',
+              color: '#0f766e',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              marginLeft: '6px',
+            }}
+          >
+            Admin
+          </span>
+        </span>
+      </a>
+      <nav aria-label="Admin navigation">
+        <a
+          href="#/"
+          className="secondary-action"
+          style={{ padding: '8px 16px', fontSize: '14px', textDecoration: 'none' }}
+        >
+          View Site
+        </a>
+      </nav>
+    </header>
+  )
+
   if (!isAdmin) {
     return (
-      <section className="admin" id="admin">
+      <>
+        {adminHeader}
+        <section className="admin" id="admin">
         <div className="admin-intro">
           <p className="eyebrow">Admin console</p>
           <h2>Manage persisted listings, images, contact details, and copy.</h2>
@@ -212,11 +257,14 @@ export default function AdminPanel({
           </button>
         </form>
       </section>
+      </>
     )
   }
 
   return (
-    <section className="admin" id="admin">
+    <>
+      {adminHeader}
+      <section className="admin" id="admin">
       <div className="admin-intro">
         <p className="eyebrow">Admin console</p>
         <h2>Clean controls for the public site and property inventory.</h2>
@@ -427,8 +475,9 @@ export default function AdminPanel({
                 <div className="media-editor">
                   <ImageDrop
                     image=""
-                    label="Add property image"
+                    label="Add property images"
                     previewAlt=""
+                    multiple={true}
                     onUpload={async (file) => {
                       const url = await uploadMedia(file, 'properties')
                       addGalleryImage(url)
@@ -487,5 +536,6 @@ export default function AdminPanel({
         </div>
       </div>
     </section>
+    </>
   )
 }
