@@ -317,12 +317,21 @@ input[type="range"] {
   border: 1px solid rgba(23, 32, 28, 0.1);
   border-radius: 8px;
   overflow: hidden;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.property-card:hover {
+  border-color: rgba(23, 32, 28, 0.26);
+  transform: translateY(-2px);
 }
 
 .property-media {
   aspect-ratio: 4 / 3;
   background: #e7e0d3;
   overflow: hidden;
+  position: relative;
 }
 
 .property-card img {
@@ -330,6 +339,18 @@ input[type="range"] {
   object-fit: cover;
   transition: transform 0.2s ease;
   width: 100%;
+}
+
+.gallery-count {
+  background: rgba(23, 32, 28, 0.82);
+  border-radius: 999px;
+  bottom: 12px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 10px;
+  position: absolute;
+  right: 12px;
 }
 
 .property-body {
@@ -376,6 +397,128 @@ input[type="range"] {
 
 .price-row strong {
   font-size: 21px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.card-actions button,
+.card-actions a {
+  align-items: center;
+  background: #17201c;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.card-actions a {
+  background: #0f766e;
+  min-width: 48px;
+}
+
+.property-detail {
+  background: #17201c;
+  padding: clamp(28px, 5vw, 56px) clamp(18px, 4vw, 56px);
+}
+
+.detail-shell {
+  background: #fff;
+  border-radius: 8px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 18px;
+  position: relative;
+}
+
+.close-detail {
+  background: #f5f1e8;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 10px 12px;
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  z-index: 2;
+}
+
+.detail-gallery,
+.detail-content,
+.enquiry-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.detail-main-image {
+  aspect-ratio: 4 / 3;
+  background: #e7e0d3;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.detail-main-image img,
+.thumb-strip img,
+.gallery-editor-item img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.thumb-strip {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.thumb-strip button {
+  aspect-ratio: 4 / 3;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+}
+
+.thumb-strip button.active {
+  border-color: #f2b84b;
+}
+
+.detail-content {
+  align-content: start;
+  padding: 54px 6px 6px;
+}
+
+.detail-price strong {
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.enquiry-panel {
+  background: #f7f4ee;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.whatsapp-action {
+  background: #0f766e;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 800;
+  padding: 13px 16px;
+  text-align: center;
 }
 
 .admin {
@@ -608,6 +751,44 @@ input[type="range"] {
   grid-column: 1 / -1;
 }
 
+.gallery-editor {
+  display: grid;
+  gap: 10px;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.gallery-editor-item {
+  background: #f7f4ee;
+  border: 1px solid rgba(23, 32, 28, 0.1);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+}
+
+.gallery-editor-item img {
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+}
+
+.gallery-editor-item div {
+  display: flex;
+  gap: 6px;
+}
+
+.gallery-editor-item button {
+  background: #fff;
+  border: 1px solid rgba(23, 32, 28, 0.14);
+  border-radius: 6px;
+  cursor: pointer;
+  flex: 1;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 8px;
+}
+
 .save-note {
   background: #e7f2ef;
   border-radius: 8px;
@@ -661,6 +842,7 @@ footer strong {
   }
 
   .hero,
+  .detail-shell,
   .market {
     grid-template-columns: 1fr;
   }
@@ -677,7 +859,8 @@ footer strong {
   .property-grid,
   .admin-panel,
   .editor-grid,
-  .media-editor {
+  .media-editor,
+  .gallery-editor {
     grid-template-columns: 1fr;
   }
 

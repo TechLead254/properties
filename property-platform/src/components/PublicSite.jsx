@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { defaultCrop } from '../data/fallbackContent'
 
 const formatter = new Intl.NumberFormat('en-KE')
@@ -11,6 +12,20 @@ const imageStyle = (item) => {
   }
 }
 
+const getImages = (property) => {
+  const gallery = Array.isArray(property.images) ? property.images : []
+  return gallery.length ? gallery : [property.image].filter(Boolean)
+}
+
+const whatsappUrl = (property) => {
+  const phone = property.contact_phone.replace(/\D/g, '')
+  const normalized = phone.startsWith('0') ? `254${phone.slice(1)}` : phone
+  const text = encodeURIComponent(
+    `Hi, I am interested in ${property.title} in ${property.location}.`,
+  )
+  return `https://wa.me/${normalized}?text=${text}`
+}
+
 export default function PublicSite({
   settings,
   properties,
@@ -19,11 +34,28 @@ export default function PublicSite({
   setCity,
   setMaxRent,
 }) {
+  const [selectedProperty, setSelectedProperty] = useState(null)
+  const [selectedImage, setSelectedImage] = useState(0)
+
   const filtered = properties.filter((property) => {
     const cityMatch = city === 'All' || property.city === city
     const rentMatch = maxRent === 'All' || property.rent <= Number(maxRent)
     return cityMatch && rentMatch
   })
+
+  const openProperty = (property) => {
+    setSelectedProperty(property)
+    setSelectedImage(0)
+    window.location.hash = `property-${property.id}`
+  }
+
+  const closeProperty = () => {
+    setSelectedProperty(null)
+    setSelectedImage(0)
+    window.location.hash = 'rentals'
+  }
+
+  const selectedImages = selectedProperty ? getImages(selectedProperty) : []
 
   return (
     <>
@@ -39,7 +71,6 @@ export default function PublicSite({
         <nav aria-label="Primary navigation">
           <a href="#rentals">Rentals</a>
           <a href="#market">Market</a>
-          <a href="#admin">Admin</a>
           <a href="#contact">Contact</a>
         </nav>
       </header>
@@ -107,10 +138,15 @@ export default function PublicSite({
             <article className="property-card" key={property.id}>
               <div className="property-media">
                 <img
-                  src={property.image}
+                  src={getImages(property)[0]}
                   alt={property.title}
                   style={imageStyle(property)}
                 />
+                {getImages(property).length > 1 ? (
+                  <span className="gallery-count">
+                    {getImages(property).length} photos
+                  </span>
+                ) : null}
               </div>
               <div className="property-body">
                 <div>
@@ -134,11 +170,90 @@ export default function PublicSite({
                   <strong>KES {formatter.format(property.rent)}</strong>
                   <span>/ month</span>
                 </div>
+                <div className="card-actions">
+                  <button type="button" onClick={() => openProperty(property)}>
+                    View details
+                  </button>
+                  <a
+                    aria-label={`WhatsApp ${property.contact_name}`}
+                    href={whatsappUrl(property)}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    WA
+                  </a>
+                </div>
               </div>
             </article>
           ))}
         </div>
       </section>
+
+      {selectedProperty ? (
+        <section className="property-detail" id={`property-${selectedProperty.id}`}>
+          <div className="detail-shell">
+            <button className="close-detail" onClick={closeProperty} type="button">
+              Close
+            </button>
+            <div className="detail-gallery">
+              <div className="detail-main-image">
+                <img
+                  src={selectedImages[selectedImage]}
+                  alt={selectedProperty.title}
+                  style={imageStyle(selectedProperty)}
+                />
+              </div>
+              {selectedImages.length > 1 ? (
+                <div className="thumb-strip">
+                  {selectedImages.map((image, index) => (
+                    <button
+                      className={index === selectedImage ? 'active' : ''}
+                      key={image}
+                      onClick={() => setSelectedImage(index)}
+                      type="button"
+                    >
+                      <img src={image} alt="" />
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+            <div className="detail-content">
+              <span className="tag">{selectedProperty.tag}</span>
+              <h2>{selectedProperty.title}</h2>
+              <p>
+                {selectedProperty.location}, {selectedProperty.city}
+              </p>
+              <div className="property-meta">
+                <span>{selectedProperty.beds} bed</span>
+                <span>{selectedProperty.baths} bath</span>
+                <span>{selectedProperty.type}</span>
+              </div>
+              <div className="detail-price">
+                <strong>KES {formatter.format(selectedProperty.rent)}</strong>
+                <span>/ month</span>
+              </div>
+              <div className="enquiry-panel">
+                <h3>Enquiry contact</h3>
+                <span>{selectedProperty.contact_name}</span>
+                <span>{selectedProperty.contact_phone}</span>
+                <span>{selectedProperty.contact_email}</span>
+                <span>
+                  Site tour fee: KES {formatter.format(selectedProperty.tour_fee)}
+                </span>
+                <a
+                  className="whatsapp-action"
+                  href={whatsappUrl(selectedProperty)}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  WhatsApp enquiry
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="market" id="market">
         <div>

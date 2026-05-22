@@ -38,6 +38,9 @@ export const defaultProperties = [
     tag: 'Move-in ready',
     image:
       'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80',
+    ],
     image_crop: defaultCrop,
     contact_name: 'Mary Wanjiku',
     contact_phone: '+254 711 000 111',
@@ -56,6 +59,9 @@ export const defaultProperties = [
     tag: 'DSQ included',
     image:
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    ],
     image_crop: defaultCrop,
     contact_name: 'David Mwangi',
     contact_phone: '+254 722 000 222',

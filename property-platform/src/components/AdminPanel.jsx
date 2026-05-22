@@ -18,6 +18,11 @@ const imageStyle = (item) => {
   }
 }
 
+const getImages = (property) => {
+  const gallery = Array.isArray(property.images) ? property.images : []
+  return gallery.length ? gallery : [property.image].filter(Boolean)
+}
+
 function ImageDrop({ label, image, previewAlt, onUpload }) {
   const [busy, setBusy] = useState(false)
 
@@ -108,6 +113,36 @@ export default function AdminPanel({
         ? Number(value)
         : value,
     }))
+  }
+
+  const addGalleryImage = (url) => {
+    setPropertyDraft((current) => {
+      const images = getImages(current)
+      return {
+        ...current,
+        image: images.length ? current.image : url,
+        images: [...images, url],
+      }
+    })
+  }
+
+  const makeCoverImage = (image) => {
+    setPropertyDraft((current) => ({
+      ...current,
+      image,
+      images: [image, ...getImages(current).filter((item) => item !== image)],
+    }))
+  }
+
+  const removeGalleryImage = (image) => {
+    setPropertyDraft((current) => {
+      const nextImages = getImages(current).filter((item) => item !== image)
+      return {
+        ...current,
+        image: current.image === image ? nextImages[0] || '' : current.image,
+        images: nextImages,
+      }
+    })
   }
 
   const updateCrop = (field, value) => {
@@ -392,19 +427,40 @@ export default function AdminPanel({
                 <div className="media-editor">
                   <ImageDrop
                     image=""
-                    label="Change property image"
+                    label="Add property image"
                     previewAlt=""
                     onUpload={async (file) => {
                       const url = await uploadMedia(file, 'properties')
-                      updateProperty('image', url)
+                      addGalleryImage(url)
                     }}
                   />
                   <div className="crop-preview">
                     <img
-                      src={propertyDraft.image}
+                      src={getImages(propertyDraft)[0]}
                       alt={`${propertyDraft.title} preview`}
                       style={imageStyle(propertyDraft)}
                     />
+                  </div>
+                  <div className="gallery-editor">
+                    {getImages(propertyDraft).map((image, index) => (
+                      <div className="gallery-editor-item" key={`${image}-${index}`}>
+                        <img src={image} alt="" />
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() => makeCoverImage(image)}
+                          >
+                            Make cover
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeGalleryImage(image)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                   <div className="crop-controls">
                     {[
