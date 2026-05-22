@@ -1,0 +1,12 @@
+tokens.txt
+node_modules/
+.kilo/
+dist/
+*.log
+*.local
+.env
+.env.*
+property-platform/node_modules/
+property-platform/dist/
+property-platform/.vercel/
+property-platform/*.log

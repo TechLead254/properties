@@ -1,0 +1,78 @@
+// Sample data for Kenyan properties
+export const properties = [
+  {
+    id: 1,
+    title: "Modern 3-Bed Apartment in Kilimani",
+    location: "Kilimani, Nairobi",
+    price: 120000,
+    priceFrequency: "month",
+    bedrooms: 3,
+    bathrooms: 2,
+    area: 1200,
+    propertyType: "Apartment",
+    amenities: ["WiFi", "Parking", "Security", "Gym", "Swimming Pool"],
+    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXBhcnRtZW50fGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+    available: true,
+    dateAvailable: "2026-06-01"
+  },
+  {
+    id: 2,
+    title: "Spacious 4-Bed House in Westlands",
+    location: "Westlands, Nairobi",
+    price: 250000,
+    priceFrequency: "month",
+    bedrooms: 4,
+    bathrooms: 3,
+    area: 2500,
+    propertyType: "House",
+    amenities: ["WiFi", "Parking", "Security", "Garden", " servants quarter"],
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
+    available: true,
+    dateAvailable: "2026-05-15"
+  },
+  {
+    id: 3,
+    title: "Luxury 2-Bed Apartment in Nyali",
+    location: "Nyali, Mombasa",
+    price: 180000,
+    priceFrequency: "month",
+    bedrooms: 2,
+    bathrooms: 2,
+    area: 900,
+    propertyType: "Apartment",
+    amenities: ["WiFi", "Parking", "Security", "Swimming Pool", "Beach Access"],
+    image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVhY2glMjBhcGFydG1lbnR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
+    available: false,
+    dateAvailable: "2026-07-01"
+  },
+  {
+    id: 4,
+    title: "Modern Studio in Upper Hill",
+    location: "Upper Hill, Nairobi",
+    price: 80000,
+    priceFrequency: "month",
+    bedrooms: 1,
+    bathrooms: 1,
+    area: 500,
+    propertyType: "Studio",
+    amenities: ["WiFi", "Parking", "Security", "Gym"],
+    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3R1ZGlvfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+    available: true,
+    dateAvailable: "2026-05-20"
+  },
+  {
+    id: 5,
+    title: "Family Home in Karen",
+    location: "Karen, Nairobi",
+    price: 450000,
+    priceFrequency: "month",
+    bedrooms: 5,
+    bathrooms: 4,
+    area: 4000,
+    propertyType: "House",
+    amenities: ["WiFi", "Parking", "Security", "Garden", "Pool", "Servants Quarter"],
+    image: "https://images.unsplash.com/photo-1580587771525-76b9b640dbd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
+    available: true,
+    dateAvailable: "2026-06-15"
+  }
+];
