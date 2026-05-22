@@ -68,3 +68,15 @@ export async function uploadMedia(file, folder) {
   const { data } = supabase.storage.from(mediaBucket).getPublicUrl(path)
   return data.publicUrl
 }
+
+export async function deleteProperty(id) {
+  if (!supabase) throw new Error('Missing Supabase configuration')
+
+  const { error } = await supabase
+    .from('properties')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
+  return true
+}

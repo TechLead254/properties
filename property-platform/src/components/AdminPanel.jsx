@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { defaultCrop } from '../data/fallbackContent'
-import { saveProperty, saveSettings, uploadMedia } from '../lib/contentApi'
+import { saveProperty, saveSettings, uploadMedia, deleteProperty } from '../lib/contentApi'
 
 const adminAccount = {
   email: 'admin@nyumbake.test',
@@ -78,6 +78,7 @@ export default function AdminPanel({
   properties,
   onSettingsSaved,
   onPropertySaved,
+  onPropertyDeleted,
 }) {
   const [isAdmin, setIsAdmin] = useState(false)
   const [login, setLogin] = useState({ email: '', password: '' })
@@ -176,6 +177,18 @@ export default function AdminPanel({
     const saved = await saveProperty(propertyDraft)
     onPropertySaved(saved)
     setStatus('Property saved.')
+  }
+
+  const deleteListing = async () => {
+    if (!window.confirm('Are you sure you want to delete this property?')) return
+    setStatus('Deleting property...')
+    try {
+      await deleteProperty(propertyDraft.id)
+      onPropertyDeleted(propertyDraft.id)
+      setStatus('Property deleted.')
+    } catch (error) {
+      setStatus(`Delete failed: ${error.message}`)
+    }
   }
 
   const adminHeader = (
@@ -404,9 +417,14 @@ export default function AdminPanel({
                   <p className="eyebrow">Property editor</p>
                   <h3>{propertyDraft.title}</h3>
                 </div>
-                <button className="primary-action" type="submit">
-                  Save property
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button className="secondary-action" type="button" onClick={deleteListing} style={{ color: '#d93025', borderColor: 'rgba(217, 48, 37, 0.3)' }}>
+                    Delete
+                  </button>
+                  <button className="primary-action" type="submit">
+                    Save property
+                  </button>
+                </div>
               </div>
 
               <section className="editor-section">

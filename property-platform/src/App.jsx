@@ -77,11 +77,19 @@ function App() {
   }
 
   const handlePropertySaved = (savedProperty) => {
-    setProperties((current) =>
-      current.map((property) =>
-        property.id === savedProperty.id ? savedProperty : property,
-      ),
-    )
+    setProperties((current) => {
+      const exists = current.find((p) => p.id === savedProperty.id)
+      if (exists) {
+        return current.map((property) =>
+          property.id === savedProperty.id ? savedProperty : property,
+        )
+      }
+      return [...current, savedProperty]
+    })
+  }
+
+  const handlePropertyDeleted = (deletedId) => {
+    setProperties((current) => current.filter((property) => property.id !== deletedId))
   }
 
   let routeContent = null
@@ -89,6 +97,7 @@ function App() {
     routeContent = (
       <AdminPanel
         onPropertySaved={handlePropertySaved}
+        onPropertyDeleted={handlePropertyDeleted}
         onSettingsSaved={handleSettingsSaved}
         properties={properties}
         settings={settings}
