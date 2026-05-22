@@ -191,6 +191,12 @@ export default function AdminPanel({
     }
   }
 
+  const handleLogout = () => {
+    setIsAdmin(false)
+    setLogin({ email: '', password: '' })
+    setStatus('')
+  }
+
   const adminHeader = (
     <header className="site-header">
       <a className="brand" href="#/">
@@ -215,7 +221,7 @@ export default function AdminPanel({
           </span>
         </span>
       </a>
-      <nav aria-label="Admin navigation">
+      <nav aria-label="Admin navigation" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
         <a
           href="#/"
           className="secondary-action"
@@ -223,6 +229,32 @@ export default function AdminPanel({
         >
           View Site
         </a>
+        {isAdmin ? (
+          <button
+            type="button"
+            onClick={handleLogout}
+            style={{
+              padding: '8px 16px',
+              fontSize: '14px',
+              background: 'transparent',
+              border: '1px solid rgba(217, 48, 37, 0.35)',
+              color: '#d93025',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: '600',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Log out
+          </button>
+        ) : null}
       </nav>
     </header>
   )
